@@ -1,8 +1,17 @@
+const imgIdle = 'style/img/player1/Martial Hero/Sprites/Idle.png'
+
+
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext("2d");
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
+
+function createImage(imageSrc){
+    const image = new Image()
+    image.src = imageSrc
+    return image
+}
 
 const gravity = 0.4
 
@@ -23,13 +32,21 @@ class Player {
             x: 0,
             y: 5
         }
-        this.width = 200
-        this.height = 500
+        this.width = 300
+        this.height = 600 
+        this.image = createImage(imgIdle)
+        this.frames = 1
     }
 
     draw() {
-        ctx.fillStyle = 'rgba(0,0,255,0.5)'
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        ctx.drawImage(
+        this.image,
+        0,
+        0,
+        150,
+        300,
+        this.position.x, 
+        this.position.y, this.width, this.height)
         if (this.position.y + this.velocity.y > canvas.height || this.position.y + this.velocity.y < 0) {
             this.velocity.y = -this.velocity.y;
         }
@@ -39,6 +56,10 @@ class Player {
     }
 
     update() {
+        this.frames++
+        if (this.frames > 10) {
+            this.frames = 0
+        }
         this.draw()
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
@@ -53,6 +74,8 @@ class Player {
         }
     }
 }
+
+
 
 const player = new Player();
 
@@ -75,7 +98,6 @@ window.addEventListener('keydown', (event) => {
     const nomTouche = event.key;
 
     if (' ' === nomTouche) {
-            Keys.up = true;
             player.velocity.y -= 10;
         }
     if ('ArrowDown' === nomTouche) {
