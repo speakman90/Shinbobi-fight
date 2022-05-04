@@ -38,11 +38,11 @@ class Player {
             stand: {
                 jump: createImage(imgJump),
                 fall: createImage(imgFall),
-                cropWidth: 200
+                cropWidth: 200,
             },
             run: {
                 right: createImage(imgRun),
-                cropWidth: 200
+                cropWidth: 200,
             },
             idle: {
                 idle: createImage(imgIdle),
@@ -55,12 +55,12 @@ class Player {
 
     draw() {
         this.frames++
-        if(this.frames > 1.5) this.frames = 0
+        if(this.frames > 1.9) this.frames = 0
         ctx.drawImage(this.currentSprite,this.currentCropWidth * this.frames,0,this.currentCropWidth,500,this.position.x,this.position.y, this.width, this.height)
         if (this.position.y + this.velocity.y > canvas.height || this.position.y + this.velocity.y < 0) {
             this.velocity.y = -this.velocity.y;
         }
-        if (this.position.x + this.velocity.x > 1720 || this.position.x + this.velocity.x < -200) {
+        if (this.position.x + this.velocity.x > 1820 || this.position.x + this.velocity.x < -100) {
             this.velocity.x = -this.velocity.x;
         }
     }
@@ -89,12 +89,7 @@ function animate(){
     now = Date.now();
     elapsed = now - then;
 
-    // if enough time has elapsed, draw the next frame
-
     if (elapsed > fpsInterval) {
-
-        // Get ready for next frame by setting then=now, but also adjust for your
-        // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
         then = now - (elapsed % fpsInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         player.update()
@@ -119,7 +114,7 @@ function startAnimating(fps) {
     animate();
 }
 
-startAnimating(60)
+startAnimating(120)
 
 function createImage(imageSrc){
     const image = new Image()
@@ -133,6 +128,7 @@ window.addEventListener('keydown', (event) => {
     if (' ' === nomTouche) {
             player.velocity.y -= 30;
             player.currentSprite = player.sprites.stand.jump
+            player.currentCropWidth = player.sprites.stand.cropWidth
         }
     if ('ArrowDown' === nomTouche) {
         Keys.down = true;
@@ -140,7 +136,7 @@ window.addEventListener('keydown', (event) => {
     if ('ArrowRight' === nomTouche) {
         Keys.right = true;
         player.currentSprite = player.sprites.run.right
-        player.currentCropWidth = player.sprite.run.cropWidth
+        player.currentCropWidth = player.sprites.run.cropWidth
         player.velocity.x += 1;
     }
     if ('ArrowLeft' === nomTouche) {
@@ -162,6 +158,8 @@ window.addEventListener('keyup', (event) => {
     }
     if ('ArrowRight' === nomTouche) {
         Keys.right = false;
+        player.currentSprite = player.sprites.idle.idle
+        player.currentCropWidth = player.sprites.idle.cropWidth
         player.velocity.x = 0;
     }
     if ('ArrowLeft' === nomTouche) {
