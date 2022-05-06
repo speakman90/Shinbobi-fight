@@ -6,8 +6,7 @@ const imgFall = 'style/img/player1/Martial Hero/Sprites/Fall.png'
 const imgFall_left = 'style/img/player1/Martial Hero/Sprites/Fall-left.png'
 const imgRun = 'style/img/player1/Martial Hero/Sprites/Run.png'
 const imgRun_left = 'style/img/player1/Martial Hero/Sprites/Run-left.png'
-
-
+const imgAttack_1 = 'style/img/player1/Martial Hero/Sprites/Attack1.png'
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext("2d");
@@ -27,8 +26,8 @@ var Keys = {
 class Player {
     constructor() {
         this.position = {
-            x: 100,
-            y: 100
+            x: 0,
+            y: 510
         }
         this.velocity = {
             x: 0,
@@ -50,6 +49,10 @@ class Player {
                 right: createImage(imgRun),
                 left: createImage(imgRun_left),
                 cropWidth: 200,
+            },
+            attack: {
+                attack_1: createImage(imgAttack_1),
+                cropWidth: 200
             },
             idle: {
                 idle: createImage(imgIdle),
@@ -88,9 +91,25 @@ class Player {
     }
 }
 
+class platforms {
+    constructor() {
+        this.position = {
+            x: 0,
+            y:638
+        }
+        this.width = canvas.width
+        this.height = 100
+    }
+
+    draw() {
+        ctx.fillStyle = 'blue'
+        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+    }
+}
 
 
 const player = new Player();
+const plateforms = new platforms();
 
 function animate(){
     requestAnimationFrame(animate)
@@ -101,12 +120,16 @@ function animate(){
         then = now - (elapsed % fpsInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         player.update()
+        plateforms.draw()
         if (Keys.right === true) {
             player.velocity.x = 10
         }
         if (Keys.left === true) {
             player.velocity.x = -10
         }
+        if (player.position.y + player.height < plateforms.position.y && player.position.y + player.height + player.velocity.y > plateforms.position.y) {
+            player.velocity.y = 0
+        } 
     }
 
 };
@@ -130,6 +153,16 @@ function createImage(imageSrc){
     return image
 }
 
+function mouseEvent(event){
+    const x = event.button
+    console.log(x)
+    // if (event.button == 'mouseup') {
+    //     /* gérer un passage en plein écran */
+    //   } else /* fullscreenerror */ {
+    //     /* gérer une erreur de passage en plein écran */
+    //   }
+}
+
 window.addEventListener('keydown', (event) => {
     const nomTouche = event.key;
 
@@ -137,6 +170,7 @@ window.addEventListener('keydown', (event) => {
             player.velocity.y -= 30;
             player.currentSprite = player.sprites.jump.jump
             player.currentCropWidth = player.sprites.jump.cropWidth
+            mouseEvent('mouseup')
         }
     if ('ArrowDown' === nomTouche) {
         Keys.down = true;
@@ -154,6 +188,16 @@ window.addEventListener('keydown', (event) => {
         player.velocity.x -= 1;
     }
 });
+
+window.addEventListener('mouseup', (event) => {
+    const x = event.button
+    
+    switch (x) {
+        case 0:
+            player.currentSprite = player.sprites.attack.attack_1
+            player.currentCropWidth = player.sprites.run.cropWidth
+    }
+})
   
 window.addEventListener('keyup', (event) => {
     const nomTouche = event.key;
@@ -161,6 +205,7 @@ window.addEventListener('keyup', (event) => {
     if (' ' === nomTouche) {
         Keys.up = false;
         player.currentSprite = player.sprites.jump.fall
+        player.currentSprite = player.sprites.idle.idle
         player.currentCropWidth = player.sprite.jump.cropWidth
     }
     if ('ArrowDown' === nomTouche) {
