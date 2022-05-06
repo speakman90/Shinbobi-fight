@@ -1,7 +1,11 @@
 const imgIdle = 'style/img/player1/Martial Hero/Sprites/Idle.png'
+const imgIdle_left = 'style/img/player1/Martial Hero/Sprites/Idle-left.png'
 const imgJump = 'style/img/player1/Martial Hero/Sprites/Jump.png'
+const imgJump_left = 'style/img/player1/Martial Hero/Sprites/Jump-left.png'
 const imgFall = 'style/img/player1/Martial Hero/Sprites/Fall.png'
+const imgFall_left = 'style/img/player1/Martial Hero/Sprites/Fall-left.png'
 const imgRun = 'style/img/player1/Martial Hero/Sprites/Run.png'
+const imgRun_left = 'style/img/player1/Martial Hero/Sprites/Run-left.png'
 
 
 
@@ -35,17 +39,21 @@ class Player {
         this.height = 400
         this.frames = 0
         this.sprites = {
-            stand: {
+            jump: {
                 jump: createImage(imgJump),
                 fall: createImage(imgFall),
+                jump_left: createImage(imgJump_left),
+                fall_left: createImage(imgFall_left),
                 cropWidth: 200,
             },
             run: {
                 right: createImage(imgRun),
+                left: createImage(imgRun_left),
                 cropWidth: 200,
             },
             idle: {
                 idle: createImage(imgIdle),
+                idle_left: createImage(imgIdle_left),
                 cropWidth: 200
             }
         }
@@ -94,10 +102,10 @@ function animate(){
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         player.update()
         if (Keys.right === true) {
-            player.velocity.x = 20
+            player.velocity.x = 10
         }
         if (Keys.left === true) {
-            player.velocity.x = -20
+            player.velocity.x = -10
         }
     }
 
@@ -127,20 +135,22 @@ window.addEventListener('keydown', (event) => {
 
     if (' ' === nomTouche) {
             player.velocity.y -= 30;
-            player.currentSprite = player.sprites.stand.jump
-            player.currentCropWidth = player.sprites.stand.cropWidth
+            player.currentSprite = player.sprites.jump.jump
+            player.currentCropWidth = player.sprites.jump.cropWidth
         }
     if ('ArrowDown' === nomTouche) {
         Keys.down = true;
     }
     if ('ArrowRight' === nomTouche) {
-        Keys.right = true;
+        Keys.right = true;        
         player.currentSprite = player.sprites.run.right
         player.currentCropWidth = player.sprites.run.cropWidth
         player.velocity.x += 1;
     }
     if ('ArrowLeft' === nomTouche) {
         Keys.left = true;
+        player.currentSprite = player.sprites.run.left
+        player.currentCropWidth = player.sprites.run.cropWidth
         player.velocity.x -= 1;
     }
 });
@@ -150,8 +160,8 @@ window.addEventListener('keyup', (event) => {
 
     if (' ' === nomTouche) {
         Keys.up = false;
-        player.currentSprite = player.sprites.stand.fall
-        player.currentCropWidth = player.sprite.stand.cropWidth
+        player.currentSprite = player.sprites.jump.fall
+        player.currentCropWidth = player.sprite.jump.cropWidth
     }
     if ('ArrowDown' === nomTouche) {
         Keys.down = false;
@@ -164,6 +174,8 @@ window.addEventListener('keyup', (event) => {
     }
     if ('ArrowLeft' === nomTouche) {
         Keys.left = false;
+        player.currentSprite = player.sprites.idle.idle_left
+        player.currentCropWidth = player.sprites.idle.cropWidth
         player.velocity.x = 0;
     }
 });
